@@ -6,7 +6,7 @@ const Home = () => {
     <div className="fade-in" style={{ paddingBottom: '4rem' }}>
       <Hero />
       
-      <div style={{ marginTop: '-8rem', position: 'relative', zIndex: 10 }}>
+      <div style={{ marginTop: '-2rem', position: 'relative', zIndex: 10 }}>
         <MediaRow 
           title="Trending Movies" 
           fetchUrl="/trending/movie/week" 
