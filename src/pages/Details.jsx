@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { tmdb, getImageUrl } from '../utils/tmdb';
-import Player from '../components/Player';
+import Player, { EMBED_SERVERS } from '../components/Player';
 import SubtitleSearch from '../components/SubtitleSearch';
-import { Play, Star, Calendar, Clock, ChevronDown } from 'lucide-react';
+import { Play, Star, Calendar, Clock } from 'lucide-react';
 
 const Details = () => {
   const { type, id } = useParams();
@@ -202,11 +202,11 @@ const Details = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                       <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Server</label>
                       <select value={selectedServer} onChange={(e) => setSelectedServer(e.target.value)} style={selectStyle}>
-                        <option value="vidking" style={{ color: 'black' }}>VidKing</option>
-                        <option value="vidsrc" style={{ color: 'black' }}>VidSrc</option>
-                        <option value="streamsrc" style={{ color: 'black' }}>StreamSrc</option>
-                        <option value="moviesrc" style={{ color: 'black' }}>MovieSrc</option>
-                        <option value="cinesrc" style={{ color: 'black' }}>CineSrc</option>
+                        {EMBED_SERVERS.map(s => (
+                          <option key={s.id} value={s.id} style={{ color: 'black' }}>
+                            {s.icon} {s.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
 
@@ -236,6 +236,47 @@ const Details = () => {
                         value={startTime} onChange={(e) => setStartTime(e.target.value)}
                         style={inputStyle}
                       />
+                    </div>
+                  </div>
+
+                  {/* Server Quick-Switch Pills */}
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ 
+                      fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, 
+                      textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '0.5rem' 
+                    }}>
+                      Quick Switch
+                    </label>
+                    <div className="no-scrollbar" style={{ 
+                      display: 'flex', gap: '0.35rem', overflowX: 'auto', paddingBottom: '0.3rem'
+                    }}>
+                      {EMBED_SERVERS.map(s => {
+                        const isActive = selectedServer === s.id;
+                        return (
+                          <button
+                            key={s.id}
+                            onClick={() => setSelectedServer(s.id)}
+                            style={{
+                              padding: '0.3rem 0.7rem',
+                              borderRadius: '6px',
+                              background: isActive ? 'var(--accent)' : 'rgba(255,255,255,0.04)',
+                              color: isActive ? 'white' : 'var(--text-secondary)',
+                              border: isActive ? '1px solid var(--accent)' : '1px solid rgba(255,255,255,0.06)',
+                              fontWeight: isActive ? 700 : 500,
+                              fontSize: '0.72rem',
+                              boxShadow: isActive ? '0 0 12px rgba(220,38,38,0.3)' : 'none',
+                              transition: 'all 0.2s ease',
+                              flexShrink: 0,
+                              cursor: 'pointer',
+                              whiteSpace: 'nowrap'
+                            }}
+                            onMouseOver={(e) => { if (!isActive) e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
+                            onMouseOut={(e) => { if (!isActive) e.currentTarget.style.background = isActive ? 'var(--accent)' : 'rgba(255,255,255,0.04)'; }}
+                          >
+                            {s.icon} {s.name}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                   
@@ -290,6 +331,7 @@ const Details = () => {
                     episode={type === 'tv' ? selectedEpisode : null}
                     server={selectedServer}
                     startTime={startTime}
+                    onServerChange={setSelectedServer}
                   />
 
                   {/* Subtitle Tool */}
