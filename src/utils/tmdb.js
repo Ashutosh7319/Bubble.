@@ -31,7 +31,8 @@ tmdb.interceptors.request.use((config) => {
   if (CUSTOM_PROXY) {
     // Custom proxy: send path+query directly to the proxy base
     config.baseURL = CUSTOM_PROXY;
-    config.url = `${config.url}`;
+    // Add /3 prefix to the URL if it's not already there
+    config.url = config.url.startsWith('/3') ? config.url : `/3${config.url}`;
     config.params = { api_key: API_KEY, ...config.params };
   } else {
     // corsproxy.io: encode the full TMDB URL as the ?url= parameter
